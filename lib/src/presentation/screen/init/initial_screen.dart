@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sima_app/src/presentation/router/routes.dart';
 import 'package:sima_app/src/utils/colors.dart';
 
 class InitialScreen extends StatefulWidget {
@@ -103,7 +104,9 @@ class _InitialScreenState extends State<InitialScreen>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.registerScreen);
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(160, 60),
                           backgroundColor: Colors.white,
@@ -134,7 +137,9 @@ class _InitialScreenState extends State<InitialScreen>
                         ),
                       ),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.loginScreen);
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(160, 60),
                           backgroundColor: AppColor.primaryColor,
