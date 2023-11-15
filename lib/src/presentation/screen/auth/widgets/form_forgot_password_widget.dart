@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_password_textfield_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_textfield_widget.dart';
