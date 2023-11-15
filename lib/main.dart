@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
+import 'package:sima_app/src/presentation/screen/auth/forgot_password_screen.dart';
+import 'package:sima_app/src/presentation/screen/auth/login_screen.dart';
+import 'package:sima_app/src/presentation/screen/auth/register_screen.dart';
 import 'package:sima_app/src/presentation/screen/auth/splash_screen.dart';
 import 'package:sima_app/src/presentation/screen/init/initial_screen.dart';
 import 'package:sima_app/src/utils/colors.dart';
@@ -43,6 +46,9 @@ class MyApp extends StatelessWidget {
       routes: {
         Routes.splashScreen: (context) => const SplashScreen(),
         Routes.initScreen: (context) => const InitialScreen(),
+        Routes.loginScreen: (context) => const LoginScreen(),
+        Routes.registerScreen:(context) => const RegisterScreen(),
+        Routes.forgotPasswordScreen:(context) => const ForgotPasswordScreen(),
       },
     );
   }
