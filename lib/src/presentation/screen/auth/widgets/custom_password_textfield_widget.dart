@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomPasswordTextFieldWidget extends StatefulWidget {
   final String hintText;
@@ -33,19 +34,19 @@ class _CustomPasswordTextFieldWidgetState
       obscureText: obscureText,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
-        hintStyle: const TextStyle(
-          fontSize: 14,
-          color: Colors.black,
+        hintStyle: TextStyle(
+          fontSize: 14.sp,
+          color: Colors.grey,
         ),
         errorStyle: const TextStyle(
           color: Colors.red,
         ),
         hintText: widget.hintText,
-        contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
-        prefixIcon: const Icon(
+        contentPadding: EdgeInsets.symmetric(vertical: 14.0.h),
+        prefixIcon: Icon(
           Icons.lock,
           color: Colors.black,
-          size: 18,
+          size: 18.sp,
         ),
         suffixIcon: GestureDetector(
           onTap: () {
@@ -60,19 +61,19 @@ class _CustomPasswordTextFieldWidgetState
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.grey, width: 2),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.black, width: 1.5),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
         errorBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.red, width: 1.5),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.red, width: 1.5),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
       ),
     );

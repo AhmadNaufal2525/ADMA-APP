@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sima_app/src/datasource/auth_remote_datasource.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_button_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_password_textfield_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_textfield_widget.dart';
@@ -13,6 +15,7 @@ class FormRegisterWidget extends StatefulWidget {
 
 class _FormRegisterWidgetState extends State<FormRegisterWidget>
     with SingleTickerProviderStateMixin {
+  final AuthRemoteDataSource authDataSource = AuthRemoteDataSource();
   late AnimationController controller;
   late Animation<double> animation;
   final formKey = GlobalKey<FormState>();
@@ -28,6 +31,11 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
     )..repeat(reverse: true);
     animation = Tween(begin: -5.0, end: 5.0).animate(controller);
   }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,28 +45,28 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Register',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 20.sp,
               ),
             ),
-            const SizedBox(
-              height: 10,
+            SizedBox(
+               height: 10.h,
             ),
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Text(
                 'Silahkan isi kelengkapan akun',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
+            SizedBox(
+              height: 10.h,
             ),
             AnimatedBuilder(
               animation: animation,
@@ -68,22 +76,22 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                     offset: Offset(0, animation.value),
                     child: Image.asset(
                       'assets/images/register.png',
-                      width: 160,
-                      height: 160,
+                      width: 160.w,
+                      height: 160.h,
                     ),
                   ),
                 );
               },
             ),
-            const Text(
+            Text(
               'Username',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(
-              height: 10,
+            SizedBox(
+              height: 10.h,
             ),
             CustomTextFieldWidget(
               onChanged: (value) {
@@ -91,8 +99,6 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
               },
               icon: Icons.person_2,
               hintText: 'Username',
-              obscureText: false,
-              isReadOnly: false,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Username Tidak Boleh Kosong!';
@@ -102,27 +108,25 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                 return null;
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
+           SizedBox(
+            height: 20.h,
+          ),
+            Text(
               'Email',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            SizedBox(
+            height: 10.h,
+          ),
             CustomTextFieldWidget(
               onChanged: (value) {
                 email = value.trim();
               },
               icon: Icons.email_rounded,
               hintText: 'Email',
-              obscureText: false,
-              isReadOnly: false,
               validator: (value) {
                 final emailRegex =
                     RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
@@ -134,19 +138,19 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                 return null;
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
+            SizedBox(
+            height: 20.h,
+          ),
+           Text(
               'Password',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+           SizedBox(
+            height: 10.h,
+          ),
             CustomPasswordTextFieldWidget(
               hintText: 'Password',
               onChanged: (value) {
@@ -161,9 +165,9 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                 return null;
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            SizedBox(
+            height: 20.h,
+          ),
             RichText(
               textAlign: TextAlign.justify,
               text: TextSpan(
@@ -172,7 +176,7 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                 style: TextStyle(
                   color: Colors.black,
                   fontFamily: GoogleFonts.openSans().fontFamily,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
                 children: [
                   TextSpan(
@@ -180,20 +184,22 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                     style: TextStyle(
                       color: Colors.black,
                       fontFamily: GoogleFonts.openSans().fontFamily,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 30,
+            SizedBox(
+              height: 30.h,
             ),
             CustomButtonWidget(
               text: 'Register',
               onPressed: () {
-                if (formKey.currentState!.validate()) {}
+                if (formKey.currentState!.validate()) {
+                  authDataSource.signUp(context, email, password, username);
+                }
               },
             ),
           ],

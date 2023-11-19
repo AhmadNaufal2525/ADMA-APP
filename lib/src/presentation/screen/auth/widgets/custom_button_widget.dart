@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sima_app/src/utils/colors.dart';
 
 class CustomButtonWidget extends StatelessWidget {
@@ -20,17 +21,17 @@ class CustomButtonWidget extends StatelessWidget {
     return ElevatedButton.icon(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(370, 60),
+        minimumSize: Size(393.w, 60.h),
         backgroundColor: AppColor.primaryColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           side: BorderSide.none,
         ),
       ),
       label: Text(
         text,
         style: TextStyle(
-            color: textColor, fontSize: 14, fontWeight: FontWeight.bold),
+            color: textColor, fontSize: 16.sp, fontWeight: FontWeight.bold),
       ),
       icon: icon != null ? icon! : const SizedBox(),
     );

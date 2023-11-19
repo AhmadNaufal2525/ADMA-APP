@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
 import 'package:sima_app/src/utils/colors.dart';
 
@@ -40,8 +41,8 @@ class _SplashScreenState extends State<SplashScreen> {
               Center(
                 child: Image.asset(
                   'assets/images/logo.png',
-                  width: 240,
-                  height: 240,
+                  width: 240.w,
+                  height: 240.h,
                 ),
               ),
               if (isLoading)
@@ -59,13 +60,12 @@ class _SplashScreenState extends State<SplashScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColor.whiteColor,
-                fontSize: 16,
+                fontSize: 16.sp,
               ),
             ),
           ),
         ],
       ),
     );
-
   }
 }

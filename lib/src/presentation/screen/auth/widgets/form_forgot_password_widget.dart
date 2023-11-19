@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sima_app/src/presentation/router/routes.dart';
+import 'package:sima_app/src/presentation/screen/auth/widgets/custom_button_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_password_textfield_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_textfield_widget.dart';
-import 'package:sima_app/src/utils/colors.dart';
 
 class FormForgotPasswordWidget extends StatefulWidget {
   const FormForgotPasswordWidget({super.key});
@@ -19,6 +21,7 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
   late String email;
   late String password;
   late String confirmPassword;
+
   @override
   void initState() {
     super.initState();
@@ -30,55 +33,62 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Reset Password',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 20.sp,
             ),
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: 20.h,
           ),
-          const Align(
+          Align(
             alignment: Alignment.topLeft,
             child: Text(
               'Silahkan isi data sesuai akun yang telah didaftarkan',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           AnimatedBuilder(
             animation: animation,
             builder: (context, child) {
               return Center(
-                  child: Transform.translate(
-                offset: Offset(0, animation.value),
-                child: Image.asset(
-                  'assets/images/forgot_pass.png',
-                  width: 160,
-                  height: 160,
+                child: Transform.translate(
+                  offset: Offset(0, animation.value),
+                  child: Image.asset(
+                    'assets/images/forgot_pass.png',
+                    width: 160.w,
+                    height: 160.h,
+                  ),
                 ),
-              ));
+              );
             },
           ),
-          const Text(
+          Text(
             'Email',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           CustomTextFieldWidget(
             onChanged: (value) {
@@ -86,8 +96,6 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
             },
             icon: Icons.email_rounded,
             hintText: 'contoh123@sucofindo.com',
-            obscureText: false,
-            isReadOnly: false,
             validator: (value) {
               final emailRegex =
                   RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
@@ -99,18 +107,18 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
               return null;
             },
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: 20.h,
           ),
-          const Text(
+          Text(
             'Password Baru',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           CustomPasswordTextFieldWidget(
             hintText: 'Password Baru',
@@ -126,18 +134,18 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
               return null;
             },
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: 20.h,
           ),
-          const Text(
+          Text(
             'Konfirmasi Password',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           CustomPasswordTextFieldWidget(
             hintText: 'Konfirmasi Password',
@@ -155,34 +163,16 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
               return null;
             },
           ),
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: 40.h,
           ),
-          ElevatedButton(
+          CustomButtonWidget(
+            text: 'Submit',
             onPressed: () {
-              if (formKey.currentState!.validate()) {}
+              if (formKey.currentState!.validate()) {
+                Navigator.of(context).pushReplacementNamed(Routes.initScreen);
+              }
             },
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(160, 66),
-              backgroundColor: AppColor.primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                  20.0,
-                ),
-              ),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Submit',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),
