@@ -8,6 +8,7 @@ import 'package:sima_app/src/presentation/screen/auth/register_screen.dart';
 import 'package:sima_app/src/presentation/screen/auth/splash_screen.dart';
 import 'package:sima_app/src/presentation/screen/init/initial_screen.dart';
 import 'package:sima_app/src/utils/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,33 +24,38 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "SIMA Sucofindo",
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          titleTextStyle: const TextStyle(
-            fontSize: 18,
-            color: Colors.white,
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    return ScreenUtilInit(
+      builder: (_, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "SIMA",
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            backgroundColor: AppColor.primaryColor,
+            titleTextStyle: const TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+            ),
+            centerTitle: true,
+            actionsIconTheme: const IconThemeData(
+              color: Colors.white,
+            ),
+            toolbarHeight: 80,
+            elevation: 1,
           ),
-          color: AppColor.primaryColor,
-          centerTitle: true,
-          actionsIconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
-          toolbarHeight: 80,
-          elevation: 1,
+          fontFamily: GoogleFonts.openSans().fontFamily,
         ),
-        fontFamily: GoogleFonts.openSans().fontFamily,
+        initialRoute: '/',
+        routes: {
+          Routes.splashScreen: (context) => const SplashScreen(),
+          Routes.initScreen: (context) => const InitialScreen(),
+          Routes.loginScreen: (context) => const LoginScreen(),
+          Routes.registerScreen:(context) => const RegisterScreen(),
+          Routes.forgotPasswordScreen:(context) => const ForgotPasswordScreen(),
+        },
       ),
-      initialRoute: '/',
-      routes: {
-        Routes.splashScreen: (context) => const SplashScreen(),
-        Routes.initScreen: (context) => const InitialScreen(),
-        Routes.loginScreen: (context) => const LoginScreen(),
-        Routes.registerScreen:(context) => const RegisterScreen(),
-        Routes.forgotPasswordScreen:(context) => const ForgotPasswordScreen(),
-      },
+      designSize: Size(width, height),
     );
   }
 }

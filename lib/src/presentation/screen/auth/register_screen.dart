@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/form_register_widget.dart';
 import 'package:sima_app/src/utils/colors.dart';
 
@@ -24,13 +25,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0).w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 140,
-                    height: 140,
+                    width: 140.w,
+                    height: 140.h,
                     child: Image.asset(
                       'assets/images/logo.png',
                       color: AppColor.primaryColor,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
 import 'package:sima_app/src/utils/colors.dart';
 
@@ -18,10 +19,17 @@ class _InitialScreenState extends State<InitialScreen>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 10),
+      duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
-    animation = Tween(begin: -10.0, end: 10.0).animate(controller);
+    animation = Tween<double>(begin: -5.0, end: 5.0).animate(controller);
   }
+  
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,7 @@ class _InitialScreenState extends State<InitialScreen>
       body: Stack(
         children: [
           SizedBox(
-            width: double.infinity,
+            width: double.infinity.w,
             child: Image.asset(
               'assets/images/ilustrator.png',
               fit: BoxFit.cover,
@@ -37,46 +45,46 @@ class _InitialScreenState extends State<InitialScreen>
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0).w,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 140,
-                    height: 140,
+                    width: 140.w,
+                    height: 140.h,
                     child: Image.asset(
                       'assets/images/logo.png',
                       color: AppColor.primaryColor,
                       fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
+                  SizedBox(
+                    height: 10.h,
                   ),
                   Text(
                     'Selamat Datang di',
-                    style: TextStyle(color: AppColor.greyColor, fontSize: 20),
+                    style: TextStyle(color: AppColor.greyColor, fontSize: 20.sp),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
-                  const Text(
+                  Text(
                     'Sistem Monitoring Aset',
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(
-                    height: 10,
+                  SizedBox(
+                    height: 10.h,
                   ),
                   Text(
                     'Ajukan peminjaman dan pengembalian aset di Sucofindo. Daftarkan akun dan ajukan peminjaman atau pengembalian aset. ',
                     style: TextStyle(
                       color: AppColor.greyColor,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       height: 2,
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
+                  SizedBox(
+                    height: 40.h,
                   ),
                   AnimatedBuilder(
                     animation: animation,
@@ -84,35 +92,32 @@ class _InitialScreenState extends State<InitialScreen>
                       return Center(
                         child: Transform.translate(
                           offset: Offset(0, animation.value),
-                          child: SizedBox(
-                            width: 200,
-                            child: Image.asset(
-                              'assets/images/box.png',
-                              fit: BoxFit.contain,
-                              width: 160,
-                              height: 160,
-                            ),
+                          child: Image.asset(
+                            'assets/images/box.png',
+                            fit: BoxFit.contain,
+                            width: 160.w,
+                            height: 160.h,
                           ),
                         ),
                       );
                     },
                   ),
-                  const SizedBox(
-                    height: 70,
+                  SizedBox(
+                    height: 70.h,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pushNamed(Routes.registerScreen);
                         },
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(160, 60),
+                          minimumSize: Size(160.w, 60.h),
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                              10.0,
+                              10.0.r,
                             ), // Adjust the radius as needed
                           ),
                         ),
@@ -121,16 +126,16 @@ class _InitialScreenState extends State<InitialScreen>
                             Icon(
                               Icons.person_add_alt_1_rounded,
                               color: AppColor.primaryColor,
-                              size: 26,
+                              size: 26.sp,
                             ),
-                            const SizedBox(
-                              width: 8,
+                            SizedBox(
+                              width: 8.w,
                             ),
                             Text(
                               'Register',
                               style: TextStyle(
                                 color: AppColor.primaryColor,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                               ),
                             ),
                           ],
@@ -141,38 +146,38 @@ class _InitialScreenState extends State<InitialScreen>
                           Navigator.of(context).pushNamed(Routes.loginScreen);
                         },
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(160, 60),
+                          minimumSize: Size(160.w, 60.h),
                           backgroundColor: AppColor.primaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                              10.0,
+                              10.0.r,
                             ), // Adjust the radius as needed
                           ),
                         ),
-                        child: const Row(
+                        child: Row(
                           children: <Widget>[
                             Text(
                               'Login',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                               ),
                             ),
                             SizedBox(
-                              width: 8,
+                              width: 8.w,
                             ),
                             Icon(
                               Icons.arrow_right_alt_rounded,
                               color: Colors.white,
-                              size: 26,
+                              size: 26.sp,
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 70,
+                  SizedBox(
+                    height: 70.h,
                   ),
                   const Align(
                     alignment: Alignment.bottomCenter,

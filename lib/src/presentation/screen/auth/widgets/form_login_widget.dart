@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sima_app/src/datasource/auth_remote_datasource.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_button_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_password_textfield_widget.dart';
@@ -14,6 +16,7 @@ class FormLoginWidget extends StatefulWidget {
 
 class _FormLoginWidgetState extends State<FormLoginWidget>
     with SingleTickerProviderStateMixin {
+  final AuthRemoteDataSource authDataSource = AuthRemoteDataSource();
   late AnimationController controller;
   late Animation<double> animation;
   final formKey = GlobalKey<FormState>();
@@ -30,34 +33,40 @@ class _FormLoginWidgetState extends State<FormLoginWidget>
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Login',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 20.sp,
             ),
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: 20.h,
           ),
-          const Align(
+          Align(
             alignment: Alignment.topLeft,
             child: Text(
               'Masukkan email dan kata sandi akun',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           AnimatedBuilder(
             animation: animation,
@@ -67,50 +76,49 @@ class _FormLoginWidgetState extends State<FormLoginWidget>
                   offset: Offset(0, animation.value),
                   child: Image.asset(
                     'assets/images/login.png',
-                    width: 200,
-                    height: 200,
+                    width: 200.w,
+                    height: 200.h,
                   ),
                 ),
               );
             },
           ),
-          const Text(
+          Text(
             'Email',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           CustomTextFieldWidget(
-              onChanged: (value) {
-                email = value.trim();
-              },
-              icon: Icons.email_rounded,
-              hintText: 'contoh123@sucofindo.com',
-              obscureText: false,
-              isReadOnly: false,
-              validator: (value) {
-                final emailRegex =
-                    RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-                if (value == null || value.isEmpty) {
-                  return 'Email Tidak Boleh Kosong!';
-                } else if (!emailRegex.hasMatch(value)) {
-                  return 'Masukkan Alamat Email Dengan Benar!';
-                }
-                return null;
-              }),
-          const SizedBox(
-            height: 20,
+            onChanged: (value) {
+              email = value.trim();
+            },
+            icon: Icons.email_rounded,
+            hintText: 'contoh123@sucofindo.com',
+            validator: (value) {
+              final emailRegex =
+                  RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+              if (value == null || value.isEmpty) {
+                return 'Email Tidak Boleh Kosong!';
+              } else if (!emailRegex.hasMatch(value)) {
+                return 'Masukkan Alamat Email Dengan Benar!';
+              }
+              return null;
+            },
           ),
-          const Text(
+          SizedBox(
+            height: 20.h,
+          ),
+          Text(
             'Password',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           CustomPasswordTextFieldWidget(
             hintText: 'Password',
@@ -136,18 +144,20 @@ class _FormLoginWidgetState extends State<FormLoginWidget>
                 'Lupa Password?',
                 style: TextStyle(
                   color: AppColor.primaryColor,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                 ),
               ),
             ),
           ),
-          const SizedBox(
-            height: 30,
+          SizedBox(
+            height: 30.h,
           ),
           CustomButtonWidget(
             text: 'Login',
             onPressed: () {
-              if (formKey.currentState!.validate()) {}
+              if (formKey.currentState!.validate()) {
+                authDataSource.signIn(context, email, password);
+              }
             },
           ),
         ],
