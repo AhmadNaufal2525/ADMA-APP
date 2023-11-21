@@ -30,7 +30,7 @@ class AuthRemoteDataSource {
         String username = responseData['user']['username'];
         String userId = responseData['user']['id'];
         String role = responseData['user']['role'];
-        
+
         if (role != 'user') {
           showToast('Unauthorized access', false);
           return;
@@ -40,12 +40,12 @@ class AuthRemoteDataSource {
 
         Future.delayed(const Duration(seconds: 1), () {
           Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                HomeScreen(username: username, userId: userId, token: token),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(username: username, userId: userId, token: token),
+            ),
+          );
         });
       } else if (response.statusCode == 404) {
         showToast('Email not registered', false);
@@ -56,6 +56,38 @@ class AuthRemoteDataSource {
       }
     } catch (e) {
       showToast('An error occurred during Login.', false);
+    }
+  }
+
+  Future<void> resetPassword(
+      BuildContext context, String email, String password) async {
+    try {
+      final uri = Uri.parse('${Constant.baseUrl}${Constant.resetPath}');
+      final Map<String, String> headers = {
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
+      final Map<String, String> body = {'email': email, 'password': password};
+
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        showToast('Reset password successful', true);
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(context).pushReplacementNamed(Routes.initScreen);
+        });
+      } else if (response.statusCode == 404) {
+        showToast('Email not registered', false);
+      } else if (response.statusCode == 401) {
+        showToast('Wrong password', false);
+      } else {
+        showToast('Reset password Failed', false);
+      }
+    } catch (e) {
+      showToast('An error occurred during Reset password.', false);
     }
   }
 

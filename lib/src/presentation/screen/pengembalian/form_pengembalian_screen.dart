@@ -376,16 +376,26 @@ class _FormPengembalianScreenState extends State<FormPengembalianScreen> {
               SizedBox(
                 height: 40.h,
               ),
-              CustomButtonWidget(
-                text: 'Submit',
-                textColor: Colors.white,
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                     asetRemoteDataSource.createPengembalian(tagNumber, lokasi, kondisiAset, tanggalPengembalian, widget.username, fotoAset);
-                  } else if (fotoAset.isEmpty) {
-                    imageAlert(context);
-                  }
-                },
+              Padding(
+                padding: const EdgeInsets.all(12.0).w,
+                child: CustomButtonWidget(
+                  text: 'Submit',
+                  textColor: Colors.white,
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      asetRemoteDataSource.createPengembalian(
+                        context,
+                        widget.tagNumber,
+                        lokasi,
+                        kondisiAset,
+                        tanggalPengembalian,
+                        widget.username,
+                      );
+                    } else if (fotoAset.isEmpty) {
+                      imageAlert(context);
+                    } 
+                  },
+                ),
               ),
               const SizedBox(
                 height: 40,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sima_app/src/presentation/router/routes.dart';
+import 'package:sima_app/src/datasource/auth_remote_datasource.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_button_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_password_textfield_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_textfield_widget.dart';
@@ -15,6 +15,7 @@ class FormForgotPasswordWidget extends StatefulWidget {
 
 class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
     with SingleTickerProviderStateMixin {
+  final AuthRemoteDataSource authDataSource = AuthRemoteDataSource();
   late AnimationController controller;
   late Animation<double> animation;
   final formKey = GlobalKey<FormState>();
@@ -170,7 +171,7 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
             text: 'Submit',
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                Navigator.of(context).pushReplacementNamed(Routes.initScreen);
+                authDataSource.resetPassword(context, email, password);
               }
             },
           ),

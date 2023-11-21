@@ -115,16 +115,15 @@ class AsetRemoteDataSource {
     } else {
       showToast("Peminjaman Gagal", false);
     }
-   
   }
 
   Future<void> createPengembalian(
+    BuildContext context,
     String tagNumber,
     String lokasi,
     String kondisiAset,
-    String tanggalPeminjaman,
+    String tanggalPengembalian,
     String username,
-    String image,
   ) async {
     final response = await http.post(
       Uri.parse('${Constant.baseUrl}${Constant.pengembalianPath}'),
@@ -137,15 +136,17 @@ class AsetRemoteDataSource {
           'username': username,
           'lokasi': lokasi,
           'kondisi_aset': kondisiAset,
-          'tanggal_peminjaman': tanggalPeminjaman,
-          'image_url': image
+          'tanggal_pengembalian': tanggalPengembalian,
         },
       ),
     );
+    print(response.body);
 
     if (response.statusCode == 201) {
       showToast("Pengembalian berhasil", true);
-      Future.delayed(const Duration(seconds: 1), () {});
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
     } else if (response.statusCode == 400) {
       showToast("Aset Sedang Dipinjam", false);
     } else if (response.statusCode == 404) {
