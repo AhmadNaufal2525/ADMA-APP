@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="sima_app"
+        android:label="SIMA"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

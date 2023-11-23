@@ -30,7 +30,7 @@ class CardPengajuanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 4,
+      elevation: 2,
       borderRadius: BorderRadius.circular(20.r),
       child: Container(
         height: 130.h,
