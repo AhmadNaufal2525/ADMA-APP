@@ -1,7 +1,9 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:material_dialogs/material_dialogs.dart';
+import 'package:material_dialogs/widgets/buttons/icon_button.dart';
+import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:sima_app/src/datasource/auth_remote_datasource.dart';
 import 'package:sima_app/src/presentation/screen/home/widgets/card_pengajuan_widget.dart';
 import 'package:sima_app/src/presentation/screen/home/widgets/form_aset_button_widget.dart';
@@ -34,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> tabData = [];
   List<dynamic> filteredTabData = [];
   int selectedTabIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -204,8 +207,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 14),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 14),
                                   child: Row(
                                     children: [
                                       FormAsetButtonWidget(
@@ -235,7 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       FormAsetButtonWidget(
                                         icon: 'assets/icon/kembali.png',
-                                        backgroundColor: const Color(0xffFF9839),
+                                        backgroundColor:
+                                            const Color(0xffFF9839),
                                         label: 'Pengembalian Aset',
                                         onTap: () {
                                           Navigator.push(
@@ -291,7 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               contentPadding:
                                   const EdgeInsets.symmetric(horizontal: 46),
                               backgroundColor: AppColor.primaryColor,
-                              unselectedBackgroundColor: const Color(0xffFF9839),
+                              unselectedBackgroundColor:
+                                  const Color(0xffFF9839),
                               unselectedLabelStyle:
                                   const TextStyle(color: Colors.white),
                               labelStyle: const TextStyle(
@@ -323,9 +328,12 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.builder(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(top: 4),
                   itemCount: filteredTabData.length,
-                  itemBuilder: (BuildContext context, int index) {
+                 itemBuilder: (BuildContext context, int index) {
                     final peminjaman = filteredTabData[index];
                     return CardPengajuanWidget(
                       date: peminjaman['tanggal_peminjaman'],
@@ -333,12 +341,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       text: peminjaman['id_aset']['nama_alat'],
                     );
                   },
+                  separatorBuilder: (BuildContext context, int index) =>
+                      SizedBox(
+                    height: 10.h,
+                  ),
                 ),
               ),
             ),
-             SizedBox(
-                height: 20.h,
-              ),
+            SizedBox(
+              height: 20.h,
+            ),
           ],
         ),
       ),
@@ -348,29 +360,32 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: AppColor.primaryColor,
         onPressed: () {
-          showCupertinoDialog(
+          Dialogs.materialDialog(
+            msg: 'Are you sure you want logout?',
+            title: "Logout",
+            color: Colors.white,
             context: context,
-            builder: (BuildContext context) {
-              return CupertinoAlertDialog(
-                title: const Text('Confirm Logout'),
-                content: const Text('Are you sure you want to log out?'),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      authDataSource.signOut(context, widget.token);
-                    },
-                    isDestructiveAction: true,
-                    child: const Text('Logout'),
-                  ),
-                ],
-              );
-            },
+            actions: [
+              IconsOutlineButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                text: 'Cancel',
+                iconData: Icons.cancel_outlined,
+                textStyle: const TextStyle(color: Colors.grey),
+                iconColor: Colors.grey,
+              ),
+              IconsButton(
+                onPressed: () {
+                  authDataSource.signOut(context, widget.token);
+                },
+                text: 'Logout',
+                iconData: Icons.logout_rounded,
+                color: Colors.red,
+                textStyle: const TextStyle(color: Colors.white),
+                iconColor: Colors.white,
+              ),
+            ],
           );
         },
         child: const Icon(Icons.logout_rounded),

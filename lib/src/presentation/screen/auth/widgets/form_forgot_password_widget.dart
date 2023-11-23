@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:sima_app/src/datasource/auth_remote_datasource.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_button_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_password_textfield_widget.dart';
 import 'package:sima_app/src/presentation/screen/auth/widgets/custom_textfield_widget.dart';
+import 'package:sima_app/src/utils/colors.dart';
 
 class FormForgotPasswordWidget extends StatefulWidget {
   const FormForgotPasswordWidget({super.key});
@@ -22,6 +24,7 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
   late String email;
   late String password;
   late String confirmPassword;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -39,144 +42,176 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
     super.dispose();
   }
 
+  void resetPassword(String email, String password) async {
+    setState(() {
+      isLoading = true;
+    });
+    await authDataSource.resetPassword(context, email, password);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Reset Password',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.sp,
-            ),
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              'Silahkan isi data sesuai akun yang telah didaftarkan',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 14.sp,
+    return Stack(
+      children: [
+        Opacity(
+          opacity: isLoading ? 0.5 : 1.0,
+          child: AbsorbPointer(
+            absorbing: isLoading,
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Reset Password',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Silahkan isi data sesuai akun yang telah didaftarkan',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  AnimatedBuilder(
+                    animation: animation,
+                    builder: (context, child) {
+                      return Center(
+                        child: Transform.translate(
+                          offset: Offset(0, animation.value),
+                          child: Image.asset(
+                            'assets/images/forgot_pass.png',
+                            width: 160.w,
+                            height: 160.h,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Text(
+                    'Email',
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  CustomTextFieldWidget(
+                    onChanged: (value) {
+                      email = value.trim();
+                    },
+                    icon: Icons.email_rounded,
+                    hintText: 'contoh123@sucofindo.com',
+                    validator: (value) {
+                      final emailRegex =
+                          RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                      if (value == null || value.isEmpty) {
+                        return 'Email Tidak Boleh Kosong!';
+                      } else if (!emailRegex.hasMatch(value)) {
+                        return 'Masukkan Alamat Email Dengan Benar!';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Text(
+                    'Password Baru',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  CustomPasswordTextFieldWidget(
+                    hintText: 'Password Baru',
+                    onChanged: (value) {
+                      password = value.trim();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Masukkan Password Anda';
+                      } else if (value.length < 6) {
+                        return 'Password harus terdiri dari 6 karakter!';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Text(
+                    'Konfirmasi Password',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  CustomPasswordTextFieldWidget(
+                    hintText: 'Konfirmasi Password',
+                    onChanged: (value) {
+                      confirmPassword = value.trim();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Masukkan Password Anda';
+                      } else if (value.length < 6) {
+                        return 'Password harus terdiri dari 6 karakter!';
+                      } else if (confirmPassword != password) {
+                        return 'Password Tidak Sama!';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 40.h,
+                  ),
+                  CustomButtonWidget(
+                    text: 'Submit',
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        resetPassword(email, password);
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(
-            height: 10.h,
-          ),
-          AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Center(
-                child: Transform.translate(
-                  offset: Offset(0, animation.value),
-                  child: Image.asset(
-                    'assets/images/forgot_pass.png',
-                    width: 160.w,
-                    height: 160.h,
-                  ),
-                ),
-              );
-            },
-          ),
-          Text(
-            'Email',
-            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          CustomTextFieldWidget(
-            onChanged: (value) {
-              email = value.trim();
-            },
-            icon: Icons.email_rounded,
-            hintText: 'contoh123@sucofindo.com',
-            validator: (value) {
-              final emailRegex =
-                  RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-              if (value == null || value.isEmpty) {
-                return 'Email Tidak Boleh Kosong!';
-              } else if (!emailRegex.hasMatch(value)) {
-                return 'Masukkan Alamat Email Dengan Benar!';
-              }
-              return null;
-            },
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          Text(
-            'Password Baru',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
+        ),
+         if (isLoading)
+        Positioned.fill(
+          child: Center(
+            child: Container(
+              color: Colors.transparent,
+              child: SpinKitFadingFour(
+                color: AppColor.primaryColor,
+                size: 50.0.sp,
+              ),
             ),
           ),
-          SizedBox(
-            height: 10.h,
-          ),
-          CustomPasswordTextFieldWidget(
-            hintText: 'Password Baru',
-            onChanged: (value) {
-              password = value.trim();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Masukkan Password Anda';
-              } else if (value.length < 6) {
-                return 'Password harus terdiri dari 6 karakter!';
-              }
-              return null;
-            },
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          Text(
-            'Konfirmasi Password',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          CustomPasswordTextFieldWidget(
-            hintText: 'Konfirmasi Password',
-            onChanged: (value) {
-              confirmPassword = value.trim();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Masukkan Password Anda';
-              } else if (value.length < 6) {
-                return 'Password harus terdiri dari 6 karakter!';
-              } else if (confirmPassword != password) {
-                return 'Password Tidak Sama!';
-              }
-              return null;
-            },
-          ),
-          SizedBox(
-            height: 40.h,
-          ),
-          CustomButtonWidget(
-            text: 'Submit',
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                authDataSource.resetPassword(context, email, password);
-              }
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
