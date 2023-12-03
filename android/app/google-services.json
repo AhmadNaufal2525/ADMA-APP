@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738713513125",
+    "project_id": "sima-rest-api-131bd",
+    "storage_bucket": "sima-rest-api-131bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738713513125:android:7077f0af702e064c7c314c",
+        "android_client_info": {
+          "package_name": "com.example.sima_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAG0Y9ljMggSvImFA7tV9Z2uN_Ev5Yq_Ms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

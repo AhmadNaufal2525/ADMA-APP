@@ -1,8 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
+import 'package:sima_app/src/presentation/screen/home/home_screen.dart';
 import 'package:sima_app/src/utils/colors.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,17 +22,42 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   openSplashScreen() async {
-    var durasiSplash = const Duration(seconds: 2);
-    return Timer(
-      durasiSplash,
-      () {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? '';
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (token.isNotEmpty && isLoggedIn) {
+      String username = prefs.getString('username') ?? '';
+      String userId = prefs.getString('userId') ?? '';
+
+      var duration = const Duration(seconds: 2);
+
+      return Timer(
+        duration,
+        () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(
+                username: username,
+                userId: userId,
+                token: token,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      var duration = const Duration(seconds: 2);
+      return Timer(duration, () {
         Navigator.of(context).pushReplacementNamed(Routes.initScreen);
-      },
-    );
+      });
+    }
   }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: AppColor.primaryColor,
       body: Stack(
         children: [
@@ -46,9 +72,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               if (isLoading)
-                  CircularProgressIndicator(
+                CircularProgressIndicator(
                   color: AppColor.whiteColor,
-              ),
+                ),
             ],
           ),
           Positioned(
