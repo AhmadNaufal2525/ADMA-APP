@@ -1,31 +1,38 @@
+import 'dart:async';
+
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
+import 'package:sima_app/src/datasource/aset_remote_datasource.dart';
 import 'package:sima_app/src/datasource/auth_remote_datasource.dart';
-import 'package:sima_app/src/presentation/screen/home/widgets/card_pengajuan_widget.dart';
-import 'package:sima_app/src/presentation/screen/home/widgets/form_aset_button_widget.dart';
-import 'package:sima_app/src/presentation/screen/peminjaman/form_peminjaman_screen.dart';
-import 'package:sima_app/src/presentation/screen/pengembalian/form_pengembalian_screen.dart';
+import 'package:sima_app/src/model/peminjaman_response_model.dart';
+import 'package:sima_app/src/model/pengembalian_response_model.dart';
+import 'package:sima_app/src/presentation/bloc/peminjaman/peminjaman_bloc.dart';
+import 'package:sima_app/src/presentation/bloc/pengembalian/pengembalian_bloc.dart';
+import 'package:sima_app/src/presentation/router/routes.dart';
+import 'package:sima_app/src/presentation/screen/home/widgets/empty_data_widget.dart';
+import 'package:sima_app/src/presentation/screen/home/widgets/pengajuan_form_widget.dart';
+import 'package:sima_app/src/presentation/screen/home/widgets/pengajuan_peminjaman_widget.dart';
+import 'package:sima_app/src/presentation/screen/home/widgets/pengajuan_pengembalian_widget.dart';
 import 'package:sima_app/src/utils/colors.dart';
 import 'package:intl/intl.dart';
-import 'package:sima_app/src/utils/constant.dart';
-import 'package:sima_app/src/widgets/toast_widget.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
   final String username;
   final String userId;
   final String token;
 
-  const HomeScreen(
-      {super.key,
-      required this.username,
-      required this.userId,
-      required this.token});
+  const HomeScreen({
+    super.key,
+    required this.username,
+    required this.userId,
+    required this.token,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -33,362 +40,329 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthRemoteDataSource authDataSource = AuthRemoteDataSource();
-  List<dynamic> tabData = [];
-  List<dynamic> filteredTabData = [];
   int selectedTabIndex = 0;
+  final peminjamanBloc = PeminjamanBloc(
+    asetRemoteDataSource: AsetRemoteDataSource(),
+  );
+  final pengembalianBloc = PengembalianBloc(
+    asetRemoteDataSource: AsetRemoteDataSource(),
+  );
+  late Timer timer;
 
   @override
   void initState() {
     super.initState();
-    loadPeminjamanData();
+    startTimer();
+  }
+
+  void startTimer() {
+    const threeHours = Duration(hours: 3);
+    timer = Timer(threeHours, () {
+      showLoginDialog();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.token != widget.token) {
+      timer.cancel();
+      startTimer();
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (widget.token.isEmpty) {
+      showLoginDialog();
+    }
+  }
+
+  void showLoginDialog() {
+    Future.delayed(Duration.zero, () {
+      Dialogs.materialDialog(
+        msg: 'Sesi Anda Telah Berakhir',
+        title: 'Silahkan Login Kembali',
+        color: Colors.white,
+        context: context,
+        actions: [
+          IconsButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed(Routes.initScreen);
+            },
+            text: 'OK',
+            iconData: Icons.check_circle,
+            color: Colors.green,
+            textStyle: const TextStyle(color: Colors.white),
+            iconColor: Colors.white,
+          ),
+        ],
+      );
+    });
   }
 
   Future<void> refreshData() async {
-    await loadPeminjamanData();
-  }
-
-  void filterTabData() {
-    if (selectedTabIndex == 0) {
-      setState(() {
-        filteredTabData = tabData
-            .where((peminjaman) => peminjaman['jenis'] == 'Peminjaman')
-            .toList();
-      });
-    } else {
-      setState(() {
-        filteredTabData = tabData
-            .where((peminjaman) => peminjaman['jenis'] == 'Pengembalian')
-            .toList();
-      });
-    }
-  }
-
-  Future<void> loadPeminjamanData() async {
-    final response = await http.get(
-      Uri.parse('${Constant.baseUrl}${Constant.peminjamanUserPath(widget.userId)}'),
+    peminjamanBloc.add(
+      GetPeminjamanEvent(userId: widget.userId, token: widget.token),
     );
-
-    try {
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final List<dynamic> peminjamanList = responseData['peminjaman'];
-
-        setState(() {
-          tabData = peminjamanList;
-          filterTabData();
-        });
-      }
-    } catch (error) {
-      showToast("Failed to load peminjaman data.", false);
-    }
+    pengembalianBloc.add(
+      GetPengembalianEvent(userId: widget.userId, token: widget.token),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.backgroundColor,
-      body: RefreshIndicator(
-        onRefresh: refreshData,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 160.h,
-                  decoration: BoxDecoration(
-                    color: AppColor.primaryColor,
-                    borderRadius: BorderRadiusDirectional.only(
-                      bottomEnd: Radius.circular(15.r),
-                      bottomStart: Radius.circular(15.r),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => peminjamanBloc
+            ..add(
+              GetPeminjamanEvent(userId: widget.userId, token: widget.token),
+            ),
+        ),
+        BlocProvider(
+          create: (context) => pengembalianBloc
+            ..add(
+              GetPengembalianEvent(userId: widget.userId, token: widget.token),
+            ),
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: AppColor.backgroundColor,
+        body: RefreshIndicator(
+          onRefresh: refreshData,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 160.h,
+                    decoration: BoxDecoration(
+                      color: AppColor.primaryColor,
+                      borderRadius: BorderRadiusDirectional.only(
+                        bottomEnd: Radius.circular(15.r),
+                        bottomStart: Radius.circular(15.r),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0).w,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 14.h,
+                                  ),
+                                  Text(
+                                    'Halo, ${widget.username} 👋',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 8.h,
+                                  ),
+                                  Text(
+                                    DateFormat("dd MMM, yyyy")
+                                        .format(DateTime.now()),
+                                    style: TextStyle(
+                                        fontSize: 16.sp, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/logo.png',
+                                    color: Colors.white,
+                                    width: 100.w,
+                                    height: 100.h,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0).w,
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0).w,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 20.h,
+                        PengajuanFormWidget(
+                          username: widget.username,
+                          token: widget.token,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 14.h,
-                                ),
-                                Text(
-                                  'Halo, ${widget.username} 👋',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  height: 8.h,
-                                ),
-                                Text(
-                                  DateFormat("dd MMM, yyyy")
-                                      .format(DateTime.now()),
-                                  style: TextStyle(
-                                      fontSize: 16.sp, color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Image.asset(
-                                  'assets/images/logo.png',
+                        SizedBox(
+                          height: 14.h,
+                        ),
+                        Text(
+                          'Tracking Pengajuan',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Text(
+                          'Lihat progress pengajuan barang disini',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16.h,
+                        ),
+                        DefaultTabController(
+                          length: 2,
+                          child: Column(
+                            children: [
+                              ButtonsTabBar(
+                                radius: 30.r,
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 46),
+                                backgroundColor: AppColor.primaryColor,
+                                unselectedBackgroundColor:
+                                    const Color(0xffFF9839),
+                                unselectedLabelStyle:
+                                    const TextStyle(color: Colors.white),
+                                labelStyle: const TextStyle(
                                   color: Colors.white,
-                                  width: 100.w,
-                                  height: 100.h,
                                 ),
-                              ],
-                            ),
-                          ],
+                                tabs: const [
+                                  Tab(
+                                    text: "Peminjaman",
+                                  ),
+                                  Tab(
+                                    text: "Pengembalian",
+                                  ),
+                                ],
+                                onTap: (index) {
+                                  setState(() {
+                                    selectedTabIndex = index;
+                                  });
+                                },
+                              ),
+                              if (selectedTabIndex == 0)
+                                BlocBuilder<PeminjamanBloc, PeminjamanState>(
+                                  builder: (context, state) {
+                                    List<Peminjaman>? peminjaman;
+                                    if (state is PeminjamanFailed) {
+                                      return const Center(
+                                        child: EmptyDataWidget(),
+                                      );
+                                    } else if (state is PeminjamanSuccess) {
+                                      peminjaman = state
+                                          .peminjamanResponse.peminjaman!
+                                          .toList();
+                                      return PengajuanPeminjamanWidget(
+                                        pengajuanData: peminjaman,
+                                        selectedTabIndex: selectedTabIndex,
+                                      );
+                                    }
+                                    return Center(
+                                      child: SpinKitFadingFour(
+                                        color: AppColor.primaryColor,
+                                        size: 50.0.sp,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              if (selectedTabIndex == 1)
+                                BlocBuilder<PengembalianBloc, PengembalianState>(
+                                  builder: (context, state) {
+                                    List<Pengembalian>? pengembalian;
+                                    if (state is PengembalianFailed) {
+                                      return const Center(
+                                        child: EmptyDataWidget(),
+                                      );
+                                    } else if (state is PengembalianSuccess) {
+                                      pengembalian = state
+                                          .pengembalianResponse.pengembalian!
+                                          .toList();
+                                      return PengajuanPengembalianWidget(
+                                        pengajuanData: pengembalian,
+                                        selectedTabIndex: selectedTabIndex,
+                                      );
+                                    }
+                                    return Center(
+                                      child: SpinKitFadingFour(
+                                        color: AppColor.primaryColor,
+                                        size: 50.0.sp,
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0).w,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 180.h,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10.r),
-                          ),
-                          color: Colors.white,
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              top: 20,
-                              left: 180,
-                              child: Align(
-                                alignment: Alignment.bottomRight,
-                                child: Image.asset(
-                                  'assets/images/circle.png',
-                                  width: 240.w,
-                                  height: 240.h,
-                                ),
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0).w,
-                                  child: Align(
-                                    alignment: AlignmentDirectional.centerStart,
-                                    child: Text(
-                                      'Form Aset',
-                                      style: TextStyle(
-                                        fontSize: 20.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 14),
-                                  child: Row(
-                                    children: [
-                                      FormAsetButtonWidget(
-                                        icon: 'assets/icon/pinjam.png',
-                                        backgroundColor: AppColor.primaryColor,
-                                        label: 'Peminjaman Aset',
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FormPeminjamanScreen(
-                                                username: widget.username,
-                                                tagNumber: '',
-                                                namaAlat: '',
-                                                merkAlat: '',
-                                                typeAlat: '',
-                                                nomorSeri: '',
-                                                pjAlat: '',
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      SizedBox(
-                                        width: 18.w,
-                                      ),
-                                      FormAsetButtonWidget(
-                                        icon: 'assets/icon/kembali.png',
-                                        backgroundColor:
-                                            const Color(0xffFF9839),
-                                        label: 'Pengembalian Aset',
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FormPengembalianScreen(
-                                                username: widget.username,
-                                                tagNumber: '',
-                                                namaAlat: '',
-                                                pjAlat: '',
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      Text(
-                        'Tracking Pengajuan',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.sp,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      Text(
-                        'Lihat progress pengajuan barang disini',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 16.h,
-                      ),
-                      DefaultTabController(
-                        length: 2,
-                        child: Column(
-                          children: [
-                            ButtonsTabBar(
-                              radius: 30.r,
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 46),
-                              backgroundColor: AppColor.primaryColor,
-                              unselectedBackgroundColor:
-                                  const Color(0xffFF9839),
-                              unselectedLabelStyle:
-                                  const TextStyle(color: Colors.white),
-                              labelStyle: const TextStyle(
-                                color: Colors.white,
-                              ),
-                              tabs: const [
-                                Tab(
-                                  text: "Peminjaman",
-                                ),
-                                Tab(
-                                  text: "Pengembalian",
-                                ),
-                              ],
-                              onTap: (index) {
-                                setState(() {
-                                  selectedTabIndex = index;
-                                  filterTabData();
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(top: 4),
-                  itemCount: filteredTabData.length,
-                 itemBuilder: (BuildContext context, int index) {
-                    final peminjaman = filteredTabData[index];
-                    return CardPengajuanWidget(
-                      date: peminjaman['tanggal_peminjaman'],
-                      status: peminjaman['status'],
-                      text: peminjaman['id_aset']['nama_alat'],
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) =>
-                      SizedBox(
-                    height: 10.h,
-                  ),
-                ),
+                ],
               ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        backgroundColor: AppColor.primaryColor,
-        onPressed: () {
-          Dialogs.materialDialog(
-            msg: 'Are you sure you want logout?',
-            title: "Logout",
-            color: Colors.white,
-            context: context,
-            actions: [
-              IconsOutlineButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                text: 'Cancel',
-                iconData: Icons.cancel_outlined,
-                textStyle: const TextStyle(color: Colors.grey),
-                iconColor: Colors.grey,
-              ),
-              IconsButton(
-                onPressed: () {
-                  authDataSource.signOut(context, widget.token);
-                },
-                text: 'Logout',
-                iconData: Icons.logout_rounded,
-                color: Colors.red,
-                textStyle: const TextStyle(color: Colors.white),
-                iconColor: Colors.white,
+              SizedBox(
+                height: 20.h,
               ),
             ],
-          );
-        },
-        child: const Icon(Icons.logout_rounded),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          backgroundColor: AppColor.primaryColor,
+          onPressed: () {
+            Dialogs.materialDialog(
+              msg: 'Anda yakin ingin logout?',
+              title: "Logout",
+              color: Colors.white,
+              context: context,
+              actions: [
+                IconsOutlineButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  text: 'Cancel',
+                  iconData: Icons.cancel_outlined,
+                  textStyle: const TextStyle(color: Colors.grey),
+                  iconColor: Colors.grey,
+                ),
+                IconsButton(
+                  onPressed: () {
+                    authDataSource.signOut(context, widget.token);
+                  },
+                  text: 'Logout',
+                  iconData: Icons.logout_rounded,
+                  color: Colors.red,
+                  textStyle: const TextStyle(color: Colors.white),
+                  iconColor: Colors.white,
+                ),
+              ],
+            );
+          },
+          child: const Icon(Icons.logout_rounded),
+        ),
       ),
     );
   }
