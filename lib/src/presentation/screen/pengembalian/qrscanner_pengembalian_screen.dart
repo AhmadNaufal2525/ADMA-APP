@@ -6,7 +6,8 @@ import 'package:sima_app/src/datasource/aset_remote_datasource.dart';
 
 class QRScannerPengembalianScreen extends StatefulWidget {
   final String username;
-  const QRScannerPengembalianScreen({super.key, required this.username});
+  final String token;
+  const QRScannerPengembalianScreen({super.key, required this.username, required this.token});
 
   @override
   State<QRScannerPengembalianScreen> createState() => _QRScannerPengembalianScreenState();
@@ -72,7 +73,7 @@ class _QRScannerPengembalianScreenState extends State<QRScannerPengembalianScree
                         setState(() {
                           tagNum = code;
                         });
-                         asetDataSource.pengembalianData(context, tagNum, widget.username);
+                         asetDataSource.pengembalianData(context, tagNum, widget.username, widget.token);
                       }
                     },
                   ),
