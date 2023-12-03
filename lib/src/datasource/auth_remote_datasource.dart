@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
 import 'package:sima_app/src/presentation/screen/home/home_screen.dart';
 import 'package:sima_app/src/utils/constant.dart';
@@ -8,6 +9,11 @@ import 'package:sima_app/src/widgets/toast_widget.dart';
 
 class AuthRemoteDataSource {
   String? token;
+
+  Future<void> setLoggedIn(bool isLoggedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', isLoggedIn);
+  }
 
   Future<void> signIn(
       BuildContext context, String email, String password) async {
@@ -36,6 +42,8 @@ class AuthRemoteDataSource {
           return;
         }
 
+        await handleSuccessfulLogin(username, userId, token);
+
         showToast('Login successful', true);
 
         Future.delayed(const Duration(seconds: 1), () {
@@ -57,6 +65,15 @@ class AuthRemoteDataSource {
     } catch (e) {
       showToast('An error occurred during Login.', false);
     }
+  }
+
+  Future<void> handleSuccessfulLogin(
+      String username, String userId, String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+    await prefs.setString('userId', userId);
+    await prefs.setString('token', token);
+    await prefs.setBool('isLoggedIn', true);
   }
 
   Future<void> resetPassword(
@@ -136,6 +153,8 @@ class AuthRemoteDataSource {
         Uri.parse('${Constant.baseUrl}${Constant.logoutPath}'),
         headers: {'Authorization': 'Bearer $token'},
       );
+
+      await setLoggedIn(false);
 
       if (response.statusCode == 200) {
         Future.delayed(const Duration(seconds: 1), () {
