@@ -10,4 +10,6 @@ class Constant {
       '/data/aset/tagNumber/$tagNum';
   static String peminjamanUserPath(String userId) =>
       '/aset/peminjam/$userId';
+  static String pengembalianUserPath(String userId) =>
+      '/aset/pengembali/$userId';
 }
