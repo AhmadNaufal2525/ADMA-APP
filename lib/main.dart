@@ -1,6 +1,11 @@
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sima_app/firebase_options.dart';
+import 'package:sima_app/src/datasource/firebase_datasource.dart';
 import 'package:sima_app/src/presentation/router/routes.dart';
 import 'package:sima_app/src/presentation/screen/auth/forgot_password_screen.dart';
 import 'package:sima_app/src/presentation/screen/auth/login_screen.dart';
@@ -10,8 +15,16 @@ import 'package:sima_app/src/presentation/screen/init/initial_screen.dart';
 import 'package:sima_app/src/utils/colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isIOS) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else if (Platform.isAndroid) {
+    await Firebase.initializeApp();
+  }
+  await FirebaseApi().initializeFirebase();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -51,8 +64,9 @@ class MyApp extends StatelessWidget {
           Routes.splashScreen: (context) => const SplashScreen(),
           Routes.initScreen: (context) => const InitialScreen(),
           Routes.loginScreen: (context) => const LoginScreen(),
-          Routes.registerScreen:(context) => const RegisterScreen(),
-          Routes.forgotPasswordScreen:(context) => const ForgotPasswordScreen(),
+          Routes.registerScreen: (context) => const RegisterScreen(),
+          Routes.forgotPasswordScreen: (context) =>
+              const ForgotPasswordScreen(),
         },
       ),
       designSize: Size(width, height),
