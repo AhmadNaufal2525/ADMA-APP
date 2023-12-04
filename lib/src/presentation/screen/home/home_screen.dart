@@ -51,15 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   final sessionConfig = SessionConfig(
-    invalidateSessionForAppLostFocus: const Duration(minutes: 1),
+    invalidateSessionForAppLostFocus: const Duration(minutes: 5),
     invalidateSessionForUserInactivity: const Duration(hours: 3),
   );
-
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -70,32 +64,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showTimeoutDialog() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setBool('isLoggedIn', false); 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false);
+    prefs.remove('token');
 
-  Future.delayed(Duration.zero, () {
-    Dialogs.materialDialog(
-      msg: 'Sesi Anda Telah Berakhir',
-      title: 'Silahkan Login Kembali',
-      color: Colors.white,
-      context: context,
-      actions: [
-        IconsButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacementNamed(Routes.initScreen);
-          },
-          text: 'OK',
-          iconData: Icons.check_circle,
-          color: Colors.green,
-          textStyle: const TextStyle(color: Colors.white),
-          iconColor: Colors.white,
-        ),
-      ],
-    );
-  });
-}
-
+    Future.delayed(Duration.zero, () {
+      Dialogs.materialDialog(
+        msg: 'Sesi Anda Telah Berakhir',
+        title: 'Silahkan Login Kembali',
+        color: Colors.white,
+        context: context,
+        actions: [
+          IconsButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed(Routes.initScreen);
+            },
+            text: 'OK',
+            iconData: Icons.check_circle,
+            color: Colors.green,
+            textStyle: const TextStyle(color: Colors.white),
+            iconColor: Colors.white,
+          ),
+        ],
+      );
+    });
+  }
 
   Future<void> refreshData() async {
     peminjamanBloc.add(
@@ -128,7 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
           BlocProvider(
             create: (context) => pengembalianBloc
               ..add(
-                GetPengembalianEvent(userId: widget.userId, token: widget.token),
+                GetPengembalianEvent(
+                    userId: widget.userId, token: widget.token),
               ),
           ),
         ],
@@ -242,8 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 ButtonsTabBar(
                                   radius: 30.r,
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(horizontal: 46),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 46),
                                   backgroundColor: AppColor.primaryColor,
                                   unselectedBackgroundColor:
                                       const Color(0xffFF9839),
