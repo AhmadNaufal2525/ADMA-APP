@@ -56,6 +56,18 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    
+    sessionConfig.stream.listen((SessionTimeoutState timeoutEvent) {
+      if (timeoutEvent == SessionTimeoutState.userInactivityTimeout ||
+          timeoutEvent == SessionTimeoutState.appFocusTimeout) {
+        showTimeoutDialog();
+      }
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.token.isEmpty) {
@@ -102,13 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    sessionConfig.stream.listen((SessionTimeoutState timeoutEvent) {
-      if (timeoutEvent == SessionTimeoutState.userInactivityTimeout) {
-        showTimeoutDialog();
-      } else if (timeoutEvent == SessionTimeoutState.appFocusTimeout) {
-        showTimeoutDialog();
-      }
-    });
     return SessionTimeoutManager(
       sessionConfig: sessionConfig,
       child: MultiBlocProvider(
