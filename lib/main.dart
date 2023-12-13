@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,13 +15,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isIOS) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } else if (Platform.isAndroid) {
-    await Firebase.initializeApp();
-  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await FirebaseApi().initializeFirebase();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(

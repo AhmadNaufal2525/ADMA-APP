@@ -26,7 +26,7 @@ class _QRScannerPengembalianScreenState extends State<QRScannerPengembalianScree
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Qr Scanner Peminjaman',
+          'Qr Scanner Pengembalian',
           style: TextStyle(
             letterSpacing: 1,
           ),

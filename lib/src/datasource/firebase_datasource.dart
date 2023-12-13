@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -18,20 +17,14 @@ class FirebaseApi {
   }
 
   Future<void> initializeFirebase() async {
-    if (Platform.isIOS) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    } else if (Platform.isAndroid) {
-      await Firebase.initializeApp();
-    }
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await notification.requestPermission();
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     initializeAwesomeNotifications();
-    subscribeAcceptPeminjaman();
-    subscribeAcceptPengembalian();
-    subscribeRejectPeminjaman();
-    subscribeRejectPengembalian();
+    subscribeToNotificationTopics();
+    configureFirebaseMessaging();
   }
 
   Future<void> initializeAwesomeNotifications() async {
@@ -52,63 +45,60 @@ class FirebaseApi {
     );
   }
 
-  void subscribeAcceptPeminjaman() async {
+  void subscribeToNotificationTopics() async {
     await notification.subscribeToTopic('accept_peminjaman');
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 1,
-          channelKey: 'key1',
-          title: message.notification?.title,
-          body: message.notification?.body,
-        ),
-      );
-    });
-  }
-
-  void subscribeRejectPeminjaman() async {
     await notification.subscribeToTopic('reject_peminjaman');
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 1,
-          channelKey: 'key1',
-          title: message.notification?.title,
-          body: message.notification?.body,
-        ),
-      );
-    });
-  }
-
-  void subscribeAcceptPengembalian() async {
     await notification.subscribeToTopic('accept_pengembalian');
+    await notification.subscribeToTopic('reject_pengembalian');
+  }
 
+  void configureFirebaseMessaging() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 1,
-          channelKey: 'key1',
-          title: message.notification?.title,
-          body: message.notification?.body,
-        ),
-      );
+      handleReceivedMessage(message);
     });
   }
 
-  void subscribeRejectPengembalian() async {
-    await notification.subscribeToTopic('reject_pengembalian');
+  void handleReceivedMessage(RemoteMessage message) {
+    if (message.data.containsKey('type')) {
+      String messageType = message.data['type'];
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 1,
-          channelKey: 'key1',
-          title: message.notification?.title,
-          body: message.notification?.body,
-        ),
-      );
-    });
+      if (messageType == 'accept_peminjaman') {
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 1,
+            channelKey: 'key1',
+            title: message.notification?.title,
+            body: message.notification?.body,
+          ),
+        );
+      } else if (messageType == 'reject_peminjaman') {
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 2,
+            channelKey: 'key1',
+            title: message.notification?.title,
+            body: message.notification?.body,
+          ),
+        );
+      } else if (messageType == 'accept_pengembalian') {
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 3,
+            channelKey: 'key1',
+            title: message.notification?.title,
+            body: message.notification?.body,
+          ),
+        );
+      } else if (messageType == 'reject_pengembalian') {
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 4,
+            channelKey: 'key1',
+            title: message.notification?.title,
+            body: message.notification?.body,
+          ),
+        );
+      }
+    }
   }
 }

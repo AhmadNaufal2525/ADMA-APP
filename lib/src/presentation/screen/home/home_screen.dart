@@ -21,6 +21,7 @@ import 'package:sima_app/src/presentation/screen/home/widgets/empty_data_widget.
 import 'package:sima_app/src/presentation/screen/home/widgets/pengajuan_form_widget.dart';
 import 'package:sima_app/src/presentation/screen/home/widgets/pengajuan_peminjaman_widget.dart';
 import 'package:sima_app/src/presentation/screen/home/widgets/pengajuan_pengembalian_widget.dart';
+import 'package:sima_app/src/presentation/screen/init/initial_screen.dart';
 import 'package:sima_app/src/utils/colors.dart';
 import 'package:intl/intl.dart';
 
@@ -52,16 +53,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final sessionConfig = SessionConfig(
     invalidateSessionForAppLostFocus: const Duration(minutes: 5),
-    invalidateSessionForUserInactivity: const Duration(hours: 3),
+    invalidateSessionForUserInactivity: const Duration(hours: 1),
   );
 
   @override
   void initState() {
     super.initState();
-    
     sessionConfig.stream.listen((SessionTimeoutState timeoutEvent) {
-      if (timeoutEvent == SessionTimeoutState.userInactivityTimeout ||
-          timeoutEvent == SessionTimeoutState.appFocusTimeout) {
+      if (timeoutEvent == SessionTimeoutState.userInactivityTimeout) {
+        Navigator.of(context).pushReplacementNamed(Routes.initScreen);
+      } else if (timeoutEvent == SessionTimeoutState.appFocusTimeout) {
         showTimeoutDialog();
       }
     });
@@ -355,6 +356,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconsButton(
                     onPressed: () {
                       authDataSource.signOut(context, widget.token);
+                      Future.delayed(const Duration(seconds: 1), () {
+                        setState(() {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const InitialScreen(),
+                            ),
+                            (route) => false,
+                          );
+                        });
+                      });
                     },
                     text: 'Logout',
                     iconData: Icons.logout_rounded,

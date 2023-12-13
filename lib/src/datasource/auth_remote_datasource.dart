@@ -157,12 +157,7 @@ class AuthRemoteDataSource {
       await setLoggedIn(false);
 
       if (response.statusCode == 200) {
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacementNamed(
-            context,
-            Routes.initScreen,
-          );
-        });
+       
         showToast('Logout successful', true);
       } else {
         showToast('Logout failed. Please try again.', false);

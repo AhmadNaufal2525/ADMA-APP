@@ -17,19 +17,13 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -52,20 +46,30 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCnE7VkbBAlK4Zeb9hktDoO6OL9YoVWcSs',
+    appId: '1:738713513125:web:53813e2bcc740c627c314c',
+    messagingSenderId: '738713513125',
+    projectId: 'sima-rest-api-131bd',
+    authDomain: 'sima-rest-api-131bd.firebaseapp.com',
+    storageBucket: 'sima-rest-api-131bd.appspot.com',
+    measurementId: 'G-EYECXM3P17',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: "AIzaSyCnE7VkbBAlK4Zeb9hktDoO6OL9YoVWcSs",
-    appId: "1:738713513125:web:53813e2bcc740c627c314c",
-    messagingSenderId: "738713513125",
-    projectId: "sima-rest-api-131bd",
-    storageBucket: "sima-rest-api-131bd.appspot.com",
+    apiKey: 'AIzaSyAG0Y9ljMggSvImFA7tV9Z2uN_Ev5Yq_Ms',
+    appId: '1:738713513125:android:7077f0af702e064c7c314c',
+    messagingSenderId: '738713513125',
+    projectId: 'sima-rest-api-131bd',
+    storageBucket: 'sima-rest-api-131bd.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: "AIzaSyCnE7VkbBAlK4Zeb9hktDoO6OL9YoVWcSs",
-    appId: "1:738713513125:web:53813e2bcc740c627c314c",
-    messagingSenderId: "738713513125",
-    projectId: "sima-rest-api-131bd",
-    storageBucket: "sima-rest-api-131bd.appspot.com",
+    apiKey: 'AIzaSyBN-Y_lWH26NsJgsIjg-hCcNUO5c5yybXU',
+    appId: '1:738713513125:ios:3966db0d0138649b7c314c',
+    messagingSenderId: '738713513125',
+    projectId: 'sima-rest-api-131bd',
+    storageBucket: 'sima-rest-api-131bd.appspot.com',
     iosBundleId: 'com.example.simaApp',
   );
 }
