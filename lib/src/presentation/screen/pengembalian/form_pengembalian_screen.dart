@@ -128,6 +128,15 @@ class _FormPengembalianScreenState extends State<FormPengembalianScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+          ),
+        ),
         title: const Text(
           'Form\nPengembalian Aset',
           textAlign: TextAlign.center,

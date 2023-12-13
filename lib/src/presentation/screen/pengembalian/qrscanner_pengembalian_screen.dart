@@ -7,13 +7,16 @@ import 'package:sima_app/src/datasource/aset_remote_datasource.dart';
 class QRScannerPengembalianScreen extends StatefulWidget {
   final String username;
   final String token;
-  const QRScannerPengembalianScreen({super.key, required this.username, required this.token});
+  const QRScannerPengembalianScreen(
+      {super.key, required this.username, required this.token});
 
   @override
-  State<QRScannerPengembalianScreen> createState() => _QRScannerPengembalianScreenState();
+  State<QRScannerPengembalianScreen> createState() =>
+      _QRScannerPengembalianScreenState();
 }
 
-class _QRScannerPengembalianScreenState extends State<QRScannerPengembalianScreen> {
+class _QRScannerPengembalianScreenState
+    extends State<QRScannerPengembalianScreen> {
   bool isScanCompleted = false;
   String tagNum = '';
   final AsetRemoteDataSource asetDataSource = AsetRemoteDataSource();
@@ -21,10 +24,20 @@ class _QRScannerPengembalianScreenState extends State<QRScannerPengembalianScree
   void closeScreen() {
     isScanCompleted = false;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+          ),
+        ),
         title: const Text(
           'Qr Scanner Pengembalian',
           style: TextStyle(
@@ -73,14 +86,15 @@ class _QRScannerPengembalianScreenState extends State<QRScannerPengembalianScree
                         setState(() {
                           tagNum = code;
                         });
-                         asetDataSource.pengembalianData(context, tagNum, widget.username, widget.token);
+                        asetDataSource.pengembalianData(
+                            context, tagNum, widget.username, widget.token);
                       }
                     },
                   ),
                   QRScannerOverlay(
                     borderColor: Colors.black,
                     overlayColor: Colors.white,
-                    scanAreaSize: const Size(340, 340),
+                    scanAreaSize: Size(320.w, 320.h),
                   ),
                 ],
               ),

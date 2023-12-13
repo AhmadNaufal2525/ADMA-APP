@@ -82,17 +82,17 @@ class CardPengajuanWidget extends StatelessWidget {
                       Text(
                         text,
                         style: TextStyle(
-                          fontSize: 14.0.sp,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 14.0),
+                      SizedBox(height: 14.0.h),
                       Text(
                         date,
                         style: TextStyle(color: Colors.black, fontSize: 16.sp),
                       ),
-                      SizedBox(height: 14.0.h),
+                      SizedBox(height: 12.0.h),
                       Text(
                         'Status : $status',
                         style: TextStyle(

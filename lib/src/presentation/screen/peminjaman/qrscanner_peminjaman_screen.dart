@@ -28,6 +28,15 @@ class _QRScannerPeminjamanScreenState extends State<QRScannerPeminjamanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.white,
+          ),
+        ),
         title: const Text(
           'Qr Scanner Peminjaman',
           style: TextStyle(
@@ -88,7 +97,7 @@ class _QRScannerPeminjamanScreenState extends State<QRScannerPeminjamanScreen> {
                   QRScannerOverlay(
                     borderColor: Colors.black,
                     overlayColor: Colors.white,
-                    scanAreaSize: const Size(340, 340),
+                    scanAreaSize: Size(320.w, 320.h),
                   ),
                 ],
               ),

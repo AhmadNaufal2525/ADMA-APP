@@ -134,202 +134,195 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         child: Scaffold(
-          backgroundColor: AppColor.backgroundColor,
-          body: RefreshIndicator(
-            onRefresh: refreshData,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 160.h,
-                      decoration: BoxDecoration(
-                        color: AppColor.primaryColor,
-                        borderRadius: BorderRadiusDirectional.only(
-                          bottomEnd: Radius.circular(15.r),
-                          bottomStart: Radius.circular(15.r),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            backgroundColor: AppColor.primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(15.r),
+                bottomRight: Radius.circular(15.r),
+              ),
+            ),
+            toolbarHeight: 120.h,
+            titleSpacing: 0,
+            title: Padding(
+              padding: const EdgeInsets.all(16.0).w,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Halo, ${widget.username} 👋',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0).w,
+                      SizedBox(
+                        height: 8.h,
+                      ),
+                      Text(
+                        DateFormat("dd MMM, yyyy").format(DateTime.now()),
+                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        color: Colors.white,
+                        width: 100.w,
+                        height: 80.h,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          backgroundColor: AppColor.backgroundColor,
+          body: SingleChildScrollView(
+            child: RefreshIndicator(
+              onRefresh: refreshData,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0).w,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: 20.h,
+                            PengajuanFormWidget(
+                              username: widget.username,
+                              token: widget.token,
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 14.h,
+                            SizedBox(
+                              height: 14.h,
+                            ),
+                            Text(
+                              'Tracking Pengajuan',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.sp,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Text(
+                              'Lihat progress pengajuan barang disini',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 16.h,
+                            ),
+                            DefaultTabController(
+                              length: 2,
+                              child: Column(
+                                children: [
+                                  ButtonsTabBar(
+                                    radius: 30.r,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 46.r,
                                     ),
-                                    Text(
-                                      'Halo, ${widget.username} 👋',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 8.h,
-                                    ),
-                                    Text(
-                                      DateFormat("dd MMM, yyyy")
-                                          .format(DateTime.now()),
-                                      style: TextStyle(
-                                          fontSize: 16.sp, color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/logo.png',
+                                    backgroundColor: AppColor.primaryColor,
+                                    unselectedBackgroundColor:
+                                        const Color(0xffFF9839),
+                                    unselectedLabelStyle:
+                                        const TextStyle(color: Colors.white),
+                                    labelStyle: const TextStyle(
                                       color: Colors.white,
-                                      width: 100.w,
-                                      height: 100.h,
                                     ),
-                                  ],
-                                ),
-                              ],
+                                    tabs: const [
+                                      Tab(
+                                        text: "Peminjaman",
+                                      ),
+                                      Tab(
+                                        text: "Pengembalian",
+                                      ),
+                                    ],
+                                    onTap: (index) {
+                                      setState(() {
+                                        selectedTabIndex = index;
+                                      });
+                                    },
+                                  ),
+                                  if (selectedTabIndex == 0)
+                                    BlocBuilder<PeminjamanBloc,
+                                        PeminjamanState>(
+                                      builder: (context, state) {
+                                        List<Peminjaman>? peminjaman;
+                                        if (state is PeminjamanFailed) {
+                                          return const Center(
+                                            child: EmptyDataWidget(),
+                                          );
+                                        } else if (state is PeminjamanSuccess) {
+                                          peminjaman = state
+                                              .peminjamanResponse.peminjaman!
+                                              .toList();
+                                          return PengajuanPeminjamanWidget(
+                                            pengajuanData: peminjaman,
+                                            selectedTabIndex: selectedTabIndex,
+                                          );
+                                        }
+                                        return Center(
+                                          child: SpinKitFadingFour(
+                                            color: AppColor.primaryColor,
+                                            size: 50.0.sp,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  if (selectedTabIndex == 1)
+                                    BlocBuilder<PengembalianBloc,
+                                        PengembalianState>(
+                                      builder: (context, state) {
+                                        List<Pengembalian>? pengembalian;
+                                        if (state is PengembalianFailed) {
+                                          return const Center(
+                                            child: EmptyDataWidget(),
+                                          );
+                                        } else if (state
+                                            is PengembalianSuccess) {
+                                          pengembalian = state
+                                              .pengembalianResponse
+                                              .pengembalian!
+                                              .toList();
+                                          return PengajuanPengembalianWidget(
+                                            pengajuanData: pengembalian,
+                                            selectedTabIndex: selectedTabIndex,
+                                          );
+                                        }
+                                        return Center(
+                                          child: SpinKitFadingFour(
+                                            color: AppColor.primaryColor,
+                                            size: 50.0.sp,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0).w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          PengajuanFormWidget(
-                            username: widget.username,
-                            token: widget.token,
-                          ),
-                          SizedBox(
-                            height: 14.h,
-                          ),
-                          Text(
-                            'Tracking Pengajuan',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.sp,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Text(
-                            'Lihat progress pengajuan barang disini',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          DefaultTabController(
-                            length: 2,
-                            child: Column(
-                              children: [
-                                ButtonsTabBar(
-                                  radius: 30.r,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 46),
-                                  backgroundColor: AppColor.primaryColor,
-                                  unselectedBackgroundColor:
-                                      const Color(0xffFF9839),
-                                  unselectedLabelStyle:
-                                      const TextStyle(color: Colors.white),
-                                  labelStyle: const TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                  tabs: const [
-                                    Tab(
-                                      text: "Peminjaman",
-                                    ),
-                                    Tab(
-                                      text: "Pengembalian",
-                                    ),
-                                  ],
-                                  onTap: (index) {
-                                    setState(() {
-                                      selectedTabIndex = index;
-                                    });
-                                  },
-                                ),
-                                if (selectedTabIndex == 0)
-                                  BlocBuilder<PeminjamanBloc, PeminjamanState>(
-                                    builder: (context, state) {
-                                      List<Peminjaman>? peminjaman;
-                                      if (state is PeminjamanFailed) {
-                                        return const Center(
-                                          child: EmptyDataWidget(),
-                                        );
-                                      } else if (state is PeminjamanSuccess) {
-                                        peminjaman = state
-                                            .peminjamanResponse.peminjaman!
-                                            .toList();
-                                        return PengajuanPeminjamanWidget(
-                                          pengajuanData: peminjaman,
-                                          selectedTabIndex: selectedTabIndex,
-                                        );
-                                      }
-                                      return Center(
-                                        child: SpinKitFadingFour(
-                                          color: AppColor.primaryColor,
-                                          size: 50.0.sp,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                if (selectedTabIndex == 1)
-                                  BlocBuilder<PengembalianBloc,
-                                      PengembalianState>(
-                                    builder: (context, state) {
-                                      List<Pengembalian>? pengembalian;
-                                      if (state is PengembalianFailed) {
-                                        return const Center(
-                                          child: EmptyDataWidget(),
-                                        );
-                                      } else if (state is PengembalianSuccess) {
-                                        pengembalian = state
-                                            .pengembalianResponse.pengembalian!
-                                            .toList();
-                                        return PengajuanPengembalianWidget(
-                                          pengajuanData: pengembalian,
-                                          selectedTabIndex: selectedTabIndex,
-                                        );
-                                      }
-                                      return Center(
-                                        child: SpinKitFadingFour(
-                                          color: AppColor.primaryColor,
-                                          size: 50.0.sp,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20.h,
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                ],
+              ),
             ),
           ),
           floatingActionButton: FloatingActionButton(
@@ -378,7 +371,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               );
             },
-            child: const Icon(Icons.logout_rounded),
+            child: const Icon(
+              Icons.logout_rounded,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

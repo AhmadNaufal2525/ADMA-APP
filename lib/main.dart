@@ -31,8 +31,6 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
     return ScreenUtilInit(
       builder: (_, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -63,7 +61,7 @@ class MyApp extends StatelessWidget {
               const ForgotPasswordScreen(),
         },
       ),
-      designSize: Size(width, height),
+      designSize: const Size(392, 852),
     );
   }
 }

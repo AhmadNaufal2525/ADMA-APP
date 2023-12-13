@@ -175,6 +175,7 @@ class _FormLoginWidgetState extends State<FormLoginWidget>
                   ),
                   CustomButtonWidget(
                     text: 'Login',
+                    textColor: Colors.white,
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
                         signIn(email, password);
@@ -187,17 +188,17 @@ class _FormLoginWidgetState extends State<FormLoginWidget>
           ),
         ),
         if (isLoading)
-        Positioned.fill(
-          child: Center(
-            child: Container(
-              color: Colors.transparent,
-              child: SpinKitFadingFour(
-                color: AppColor.primaryColor,
-                size: 50.0.sp,
+          Positioned.fill(
+            child: Center(
+              child: Container(
+                color: Colors.transparent,
+                child: SpinKitFadingFour(
+                  color: AppColor.primaryColor,
+                  size: 50.0.sp,
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

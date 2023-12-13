@@ -105,7 +105,8 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
                   ),
                   Text(
                     'Email',
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 10.h,
@@ -117,8 +118,8 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
                     icon: Icons.email_rounded,
                     hintText: 'contoh123@sucofindo.com',
                     validator: (value) {
-                      final emailRegex =
-                          RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                      final emailRegex = RegExp(
+                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                       if (value == null || value.isEmpty) {
                         return 'Email Tidak Boleh Kosong!';
                       } else if (!emailRegex.hasMatch(value)) {
@@ -188,6 +189,7 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
                   ),
                   CustomButtonWidget(
                     text: 'Submit',
+                    textColor: Colors.white,
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
                         resetPassword(email, password);
@@ -199,18 +201,18 @@ class _FormForgotPasswordWidgetState extends State<FormForgotPasswordWidget>
             ),
           ),
         ),
-         if (isLoading)
-        Positioned.fill(
-          child: Center(
-            child: Container(
-              color: Colors.transparent,
-              child: SpinKitFadingFour(
-                color: AppColor.primaryColor,
-                size: 50.0.sp,
+        if (isLoading)
+          Positioned.fill(
+            child: Center(
+              child: Container(
+                color: Colors.transparent,
+                child: SpinKitFadingFour(
+                  color: AppColor.primaryColor,
+                  size: 50.0.sp,
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

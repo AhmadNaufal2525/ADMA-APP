@@ -52,7 +52,6 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -75,7 +74,7 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                       ),
                     ),
                     SizedBox(
-                       height: 10.h,
+                      height: 10.h,
                     ),
                     Align(
                       alignment: Alignment.topLeft,
@@ -130,9 +129,9 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                         return null;
                       },
                     ),
-                   SizedBox(
-                    height: 20.h,
-                  ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
                     Text(
                       'Email',
                       style: TextStyle(
@@ -141,8 +140,8 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                       ),
                     ),
                     SizedBox(
-                    height: 10.h,
-                  ),
+                      height: 10.h,
+                    ),
                     CustomTextFieldWidget(
                       onChanged: (value) {
                         email = value.trim();
@@ -150,8 +149,8 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                       icon: Icons.email_rounded,
                       hintText: 'Email',
                       validator: (value) {
-                        final emailRegex =
-                            RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                        final emailRegex = RegExp(
+                            r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                         if (value == null || value.isEmpty) {
                           return 'Email Tidak Boleh Kosong!';
                         } else if (!emailRegex.hasMatch(value)) {
@@ -161,18 +160,18 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                       },
                     ),
                     SizedBox(
-                    height: 20.h,
-                  ),
-                   Text(
+                      height: 20.h,
+                    ),
+                    Text(
                       'Password',
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                   SizedBox(
-                    height: 10.h,
-                  ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
                     CustomPasswordTextFieldWidget(
                       hintText: 'Password',
                       onChanged: (value) {
@@ -188,8 +187,8 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                       },
                     ),
                     SizedBox(
-                    height: 20.h,
-                  ),
+                      height: 20.h,
+                    ),
                     RichText(
                       textAlign: TextAlign.justify,
                       text: TextSpan(
@@ -218,6 +217,7 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
                     ),
                     CustomButtonWidget(
                       text: 'Register',
+                      textColor: Colors.white,
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
                           signUp(email, password, username);
@@ -231,17 +231,17 @@ class _FormRegisterWidgetState extends State<FormRegisterWidget>
           ),
         ),
         if (isLoading)
-        Positioned.fill(
-          child: Center(
-            child: Container(
-              color: Colors.transparent,
-              child: SpinKitFadingFour(
-                color: AppColor.primaryColor,
-                size: 50.0.sp,
+          Positioned.fill(
+            child: Center(
+              child: Container(
+                color: Colors.transparent,
+                child: SpinKitFadingFour(
+                  color: AppColor.primaryColor,
+                  size: 50.0.sp,
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

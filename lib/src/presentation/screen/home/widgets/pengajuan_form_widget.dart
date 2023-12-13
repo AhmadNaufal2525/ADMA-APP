@@ -8,12 +8,13 @@ import 'package:sima_app/src/utils/colors.dart';
 class PengajuanFormWidget extends StatelessWidget {
   final String username;
   final String token;
-  const PengajuanFormWidget({super.key, required this.username, required this.token});
+  const PengajuanFormWidget(
+      {super.key, required this.username, required this.token});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 180.h,
+      height: 170.h,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
@@ -51,13 +52,14 @@ class PengajuanFormWidget extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Row(
                   children: [
                     FormAsetButtonWidget(
                       icon: 'assets/icon/pinjam.png',
                       backgroundColor: AppColor.primaryColor,
-                      label: 'Peminjaman Aset',
+                      label: 'Peminjaman\nAset',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -69,7 +71,8 @@ class PengajuanFormWidget extends StatelessWidget {
                               merkAlat: '',
                               typeAlat: '',
                               nomorSeri: '',
-                              pjAlat: '', token: token,
+                              pjAlat: '',
+                              token: token,
                             ),
                           ),
                         );
@@ -81,7 +84,7 @@ class PengajuanFormWidget extends StatelessWidget {
                     FormAsetButtonWidget(
                       icon: 'assets/icon/kembali.png',
                       backgroundColor: const Color(0xffFF9839),
-                      label: 'Pengembalian Aset',
+                      label: 'Pengembalian\nAset',
                       onTap: () {
                         Navigator.push(
                           context,
@@ -90,7 +93,8 @@ class PengajuanFormWidget extends StatelessWidget {
                               username: username,
                               tagNumber: '',
                               namaAlat: '',
-                              pjAlat: '', token: token,
+                              pjAlat: '',
+                              token: token,
                             ),
                           ),
                         );
