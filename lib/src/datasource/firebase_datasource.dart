@@ -49,7 +49,6 @@ class FirebaseApi {
 
   void subscribeAcceptPeminjaman() async {
     await notification.subscribeToTopic('accept_peminjaman');
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       AwesomeNotifications().createNotification(
         content: NotificationContent(
