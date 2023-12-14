@@ -92,9 +92,9 @@ class _QRScannerPengembalianScreenState
                     },
                   ),
                   QRScannerOverlay(
-                    borderColor: Colors.black,
-                    overlayColor: Colors.white,
-                    scanAreaSize: Size(320.w, 320.h),
+                    borderColor: Colors.white,
+                    overlayColor: Colors.white10,
+                    scanAreaSize: Size(220.w, 220.h),
                   ),
                 ],
               ),

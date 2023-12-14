@@ -69,8 +69,8 @@ class _InitialScreenState extends State<InitialScreen>
                     height: 10.h,
                   ),
                   Text(
-                    'Aset Dashboard Management Application',
-                    style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
+                    'Aset Management Application',
+                    style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 10.h,

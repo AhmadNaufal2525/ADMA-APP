@@ -85,6 +85,7 @@ class CardPengajuanWidget extends StatelessWidget {
                           fontSize: 13.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       SizedBox(height: 14.0.h),
