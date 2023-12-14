@@ -69,14 +69,14 @@ class _InitialScreenState extends State<InitialScreen>
                     height: 10.h,
                   ),
                   Text(
-                    'Sistem Monitoring Aset',
-                    style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
+                    'Aset Dashboard Management Application',
+                    style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 10.h,
                   ),
                   Text(
-                    'Ajukan peminjaman dan pengembalian aset di Sucofindo. Daftarkan akun dan ajukan peminjaman atau pengembalian aset. ',
+                    'Ajukan peminjaman dan pengembalian aset di Sucofindo. Daftarkan akun dan ajukan peminjaman atau pengembalian aset.',
                     style: TextStyle(
                       color: AppColor.greyColor,
                       fontSize: 14.sp,

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (_, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: "SIMA",
+        title: "ADMA",
         theme: ThemeData(
           appBarTheme: AppBarTheme(
             backgroundColor: AppColor.primaryColor,
