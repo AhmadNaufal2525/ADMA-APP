@@ -7,6 +7,7 @@ class TextFormFieldWidget extends StatelessWidget {
   final bool obscureText;
   final FormFieldValidator<String>? validator;
   final String? initialValue;
+  final TextInputType? textInputType;
   final bool isReadOnly;
 
   const TextFormFieldWidget({
@@ -17,6 +18,7 @@ class TextFormFieldWidget extends StatelessWidget {
     required this.onChanged,
     this.isReadOnly = false,
     required this.text,
+    this.textInputType,
   });
 
   @override
@@ -37,6 +39,7 @@ class TextFormFieldWidget extends StatelessWidget {
             onChanged: onChanged,
             validator: validator,
             obscureText: obscureText,
+            keyboardType: textInputType,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               contentPadding:

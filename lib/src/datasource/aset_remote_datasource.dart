@@ -105,6 +105,7 @@ class AsetRemoteDataSource {
     String kondisiAset,
     String tanggalPeminjaman,
     String tujuanPeminjaman,
+    String hari,
     String username,
   ) async {
     final response = await http.post(
@@ -119,7 +120,8 @@ class AsetRemoteDataSource {
           'lokasi': lokasi,
           'kondisi_aset': kondisiAset,
           'tanggal_peminjaman': tanggalPeminjaman,
-          'tujuan_peminjaman': tujuanPeminjaman
+          'tujuan_peminjaman': tujuanPeminjaman,
+          'waktu_peminjaman': hari,
         },
       ),
     );

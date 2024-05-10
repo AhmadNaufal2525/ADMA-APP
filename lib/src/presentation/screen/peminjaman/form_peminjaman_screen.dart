@@ -42,6 +42,7 @@ class _FormPeminjamanScreenState extends State<FormPeminjamanScreen> {
   late String typeAset = '';
   late String noSeri = '';
   late String pjAset = '';
+  late String hari;
   late String lokasi;
   late String kondisiAset;
   late String tanggalPeminjaman = '';
@@ -72,6 +73,7 @@ class _FormPeminjamanScreenState extends State<FormPeminjamanScreen> {
       String kondisiAset,
       String tanggalPeminjaman,
       String tujuanPeminjaman,
+      String hari,
       String username) async {
     setState(() {
       isLoading = true;
@@ -84,6 +86,7 @@ class _FormPeminjamanScreenState extends State<FormPeminjamanScreen> {
       kondisiAset,
       tanggalPeminjaman,
       tujuanPeminjaman,
+      hari,
       username,
     );
 
@@ -365,6 +368,22 @@ class _FormPeminjamanScreenState extends State<FormPeminjamanScreen> {
                                 SizedBox(
                                   height: 20.h,
                                 ),
+                                TextFormFieldWidget(
+                                  onChanged: (value) {
+                                    hari = value.trim();
+                                  },
+                                  textInputType: TextInputType.number,
+                                  text: 'Waktu Peminjaman(Hari)',
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Isi Tujuan Peminjaman!';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 20.h,
+                                ),
                               ],
                             ),
                           ),
@@ -381,13 +400,15 @@ class _FormPeminjamanScreenState extends State<FormPeminjamanScreen> {
                           onPressed: () {
                             if (formKey.currentState!.validate()) {
                               createPeminjaman(
-                                  context,
-                                  widget.tagNumber,
-                                  lokasi,
-                                  kondisiAset,
-                                  tanggalPeminjaman,
-                                  tujuanPeminjaman,
-                                  widget.username);
+                                context,
+                                widget.tagNumber,
+                                lokasi,
+                                kondisiAset,
+                                tanggalPeminjaman,
+                                tujuanPeminjaman,
+                                hari,
+                                widget.username,
+                              );
                             }
                           },
                         ),
